@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,8 +56,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  final _channel = MethodChannel("contact_launcher");
 
-  void _incrementCounter() {
+  void _incrementCounter() async {
+    final result = await _channel.invokeMethod('createContact', {
+      "firstName": "Madhan",
+      "fullscreen": true,
+    });
+
+    print("SAVED INFO$result");
+    if (result['status'] == 'CREATED') {
+      print("✅ Contact Saved:");
+      print("Name: ${result['fullName']}");
+      print("Phones: ${result['phoneNumbers']}");
+      print("Emails: ${result['email']}");
+    } else if (result['status'] == 'USER_CANCELLED') {
+      print("❌ User cancelled contact creation.");
+    }
+    // final result = await _channel.invokeMethod('createContact', {'number': ""});
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
