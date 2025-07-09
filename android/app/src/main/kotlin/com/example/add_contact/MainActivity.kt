@@ -145,19 +145,33 @@ class MainActivity : FlutterActivity() {
     private fun getContactDetails(contactId: String): Map<String, String?> {
         val result = mutableMapOf<String, String?>()
 
-        // Display Name
-        contentResolver.query(
-            ContactsContract.Contacts.CONTENT_URI,
-            arrayOf(ContactsContract.Contacts.DISPLAY_NAME),
-            "${ContactsContract.Contacts._ID} = ?",
-            arrayOf(contactId),
-            null
-        )?.use { cursor ->
-            if (cursor.moveToFirst()) {
-                result["fullName"] = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
-            }
+        // // Display Name
+        // contentResolver.query(
+        //     ContactsContract.Contacts.CONTENT_URI,
+        //     arrayOf(ContactsContract.Contacts.DISPLAY_NAME),
+        //     "${ContactsContract.Contacts._ID} = ?",
+        //     arrayOf(contactId),
+        //     null
+        // )?.use { cursor ->
+        //     if (cursor.moveToFirst()) {
+        //         result["fullName"] = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
+        //     }
+        // }
+ contentResolver.query(
+        ContactsContract.Contacts.CONTENT_URI,
+        arrayOf(
+            ContactsContract.Contacts.DISPLAY_NAME,
+            ContactsContract.Contacts.PHOTO_URI // 👈 Add this
+        ),
+        "${ContactsContract.Contacts._ID} = ?",
+        arrayOf(contactId),
+        null
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            result["fullName"] = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
+            result["photoUri"] = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
         }
-
+    }
         // Phone
         contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
