@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -57,7 +59,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final _channel = MethodChannel("contact_launcher");
-
+  String photoUri = "";
   void _incrementCounter() async {
     final result = await _channel.invokeMethod('createContact', {
       "firstName": "Madhan",
@@ -70,6 +72,10 @@ class _MyHomePageState extends State<MyHomePage> {
       print("Name: ${result['fullName']}");
       print("Phones: ${result['phoneNumbers']}");
       print("Emails: ${result['email']}");
+      photoUri = result['photoUri'] ?? "";
+      if (photoUri.isNotEmpty) {
+        setState(() {});
+      }
     } else if (result['status'] == 'USER_CANCELLED') {
       print("❌ User cancelled contact creation.");
     }
@@ -126,6 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            if (photoUri.isNotEmpty)
+              InteractiveViewer(child: Image.memory(base64Decode(photoUri))),
           ],
         ),
       ),

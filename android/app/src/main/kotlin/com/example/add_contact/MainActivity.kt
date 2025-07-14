@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import android.net.Uri
+import android.util.Base64
 
 class MainActivity : FlutterActivity() {
 
@@ -169,7 +171,7 @@ class MainActivity : FlutterActivity() {
     )?.use { cursor ->
         if (cursor.moveToFirst()) {
             result["fullName"] = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
-            result["photoUri"] = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI))
+            result["photoUri"] = getContactPhotoBase64(cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.PHOTO_URI)))
         }
     }
         // Phone
@@ -227,4 +229,20 @@ class MainActivity : FlutterActivity() {
 
         return result
     }
+
+
+
+    private fun getContactPhotoBase64(uriString: String?): String? {
+    return try {
+        if (uriString.isNullOrEmpty()) return null
+        val uri = Uri.parse(uriString)
+        val inputStream = contentResolver.openInputStream(uri)
+        val bytes = inputStream?.readBytes()
+        inputStream?.close()
+        bytes?.let { Base64.encodeToString(it, Base64.NO_WRAP) }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
 }
