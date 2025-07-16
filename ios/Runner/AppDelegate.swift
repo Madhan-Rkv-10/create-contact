@@ -100,6 +100,7 @@ import ContactsUI
 
         // Photo
         if let photoBytes = args["photo"] as? FlutterStandardTypedData {
+            print(photoBytes.data)
             contact.imageData = photoBytes.data
         }
 
@@ -176,7 +177,8 @@ import ContactsUI
                     "socialProfiles": socialProfiles,
                     "instantMessages": imAddresses,
                     "relatedNames": relatedNames,
-                    "urlAddresses": urls
+                    "urlAddresses": urls,
+                    "image":contact.imageData
                 ]
 
                 self.flutterResult?(response)

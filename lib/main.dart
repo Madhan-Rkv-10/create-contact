@@ -60,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final _channel = MethodChannel("contact_launcher");
   String photoUri = "";
+  Uint8List? _photoIos;
   void _incrementCounter() async {
     final result = await _channel.invokeMethod('createContact', {
       "firstName": "Madhan",
@@ -73,6 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
       print("Phones: ${result['phoneNumbers']}");
       print("Emails: ${result['email']}");
       photoUri = result['photoUri'] ?? "";
+      _photoIos = result['image'];
       if (photoUri.isNotEmpty) {
         setState(() {});
       }
@@ -134,6 +136,9 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             if (photoUri.isNotEmpty)
               InteractiveViewer(child: Image.memory(base64Decode(photoUri))),
+
+            if (_photoIos != null)
+              InteractiveViewer(child: Image.memory(_photoIos!)),
           ],
         ),
       ),
