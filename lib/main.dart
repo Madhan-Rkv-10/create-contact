@@ -135,10 +135,18 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             if (photoUri.isNotEmpty)
-              InteractiveViewer(child: Image.memory(base64Decode(photoUri))),
+              AspectRatio(
+                aspectRatio: 1.2,
+                child: InteractiveViewer(
+                  child: Image.memory(base64Decode(photoUri)),
+                ),
+              ),
 
             if (_photoIos != null)
-              InteractiveViewer(child: Image.memory(_photoIos!)),
+              AspectRatio(
+                aspectRatio: 1.2,
+                child: InteractiveViewer(child: Image.memory(_photoIos!)),
+              ),
           ],
         ),
       ),
